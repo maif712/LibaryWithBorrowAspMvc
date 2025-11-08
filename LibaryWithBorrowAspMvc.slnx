@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Domain.Common/Domain.Common.csproj" />
+  <Project Path="LibaryWithBorrowAspMvc/LibaryWithBorrowAspMvc.csproj" />
+</Solution>
