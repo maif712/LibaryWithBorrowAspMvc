@@ -1,3 +1,5 @@
+using Domain.Common;
+using LibaryWithBorrowAspMvc.Core;
 using LibaryWithBorrowAspMvc.Core.Interfaces;
 using LibaryWithBorrowAspMvc.Core.Services;
 using LibaryWithBorrowAspMvc.Data;
@@ -17,6 +19,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
     option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+// Register generic repo for all TEntity
+builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<PasswordHasher<User>>();
@@ -26,6 +31,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(options =>
     {
         options.LoginPath = "/Account/Login"; // redirect if not logged in
+        options.AccessDeniedPath = "/Account/AccessDenied"; // Path to AccessDenied page
 
         // Keep cookie after browser closes
         options.SlidingExpiration = true;

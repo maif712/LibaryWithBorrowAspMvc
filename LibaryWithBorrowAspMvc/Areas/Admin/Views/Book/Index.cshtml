@@ -50,18 +50,23 @@
     <!-- Pagination -->
     <nav aria-label="Page navigation" class="mt-4">
         <ul class="pagination justify-content-center">
-            <li class="page-item @(Model.Page == 1 ? "disabled" : "")">
-                <a class="page-link" href="@Url.Action("Index", new { page = Model.Page - 1, pageSize = Model.PageSize })">Previous</a>
+
+            <!-- Previous -->
+            <li class="page-item @(Model.HasPrevious ? "" : "disabled")">
+                <a class="page-link" asp-action="Index" asp-route-page="@(Model.Page - 1)" >
+                    Previous
+                </a>
             </li>
 
             @{
-                int totalPages = (int)Math.Ceiling((double)Model.TotalCount / Model.PageSize);
                 int startPage = Math.Max(1, Model.Page - 2);
-                int endPage = Math.Min(totalPages, Model.Page + 2);
+                int endPage = Math.Min(Model.TotalPages, Model.Page + 2);
 
                 if (startPage > 1)
                 {
-                    <li class="page-item"><a class="page-link" href="@Url.Action("Index", new { page = 1, pageSize = Model.PageSize })">1</a></li>
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-page="1" >1</a>
+                    </li>
                     if (startPage > 2)
                     {
                         <li class="page-item disabled"><span class="page-link">...</span></li>
@@ -71,23 +76,29 @@
                 for (int i = startPage; i <= endPage; i++)
                 {
                     <li class="page-item @(i == Model.Page ? "active" : "")">
-                        <a class="page-link" href="@Url.Action("Index", new { page = i, pageSize = Model.PageSize })">@i</a>
+                        <a class="page-link" asp-action="Index" asp-route-page="@i" >@i</a>
                     </li>
                 }
 
-                if (endPage < totalPages)
+                if (endPage < Model.TotalPages)
                 {
-                    if (endPage < totalPages - 1)
+                    if (endPage < Model.TotalPages - 1)
                     {
                         <li class="page-item disabled"><span class="page-link">...</span></li>
                     }
-                    <li class="page-item"><a class="page-link" href="@Url.Action("Index", new { page = totalPages, pageSize = Model.PageSize })">@totalPages</a></li>
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-page="@Model.TotalPages">@Model.TotalPages</a>
+                    </li>
                 }
             }
 
-            <li class="page-item @(Model.Page == totalPages ? "disabled" : "")">
-                <a class="page-link" href="@Url.Action("Index", new { page = Model.Page + 1, pageSize = Model.PageSize })">Next</a>
+            <!-- Next -->
+            <li class="page-item @(Model.HasNext ? "" : "disabled")">
+                <a class="page-link" asp-action="Index" asp-route-page="@(Model.Page + 1)" >
+                    Next
+                </a>
             </li>
         </ul>
     </nav>
+
 </div>

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LibaryWithBorrowAspMvc.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    //[Authorize(Roles = StaticRoles.ADMIN)]
+    [Authorize(Roles = StaticRoles.ADMIN)]
     public class BookController : Controller
     {
         private readonly IBookService _bookService;

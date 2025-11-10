@@ -11,31 +11,14 @@ namespace LibaryWithBorrowAspMvc.Core.Services
 {
     public class BookService : IBookService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IRepository<Book> _repo;
 
-        public BookService(ApplicationDbContext context)
+        public BookService(IRepository<Book> repo)
         {
-            _context = context;
+            _repo = repo;
         }
 
-        public async Task<PagedResult<TProjection>> GetAllAsync<TProjection>(Expression<Func<Book, TProjection>> selector, PaginationOptions options)
-        {
-            var query = _context.Books.AsQueryable().AsNoTracking();
-
-            var totalCount = await query.CountAsync();
-            var items = await query
-                .Skip((options.Page - 1) * options.PageSize)
-                .Take(options.PageSize)
-                .Select(selector)
-                .ToListAsync();
-
-            return new PagedResult<TProjection>()
-            {
-                Items = items,
-                TotalCount = totalCount,
-                Page = options.Page,
-                PageSize = options.PageSize
-            };
-        }
+        public Task<PagedResult<TProjection>> GetAllAsync<TProjection>(Expression<Func<Book, TProjection>> selector, PaginationOptions options)
+            => _repo.GetAllAsync(selector, options);
     }
 }
