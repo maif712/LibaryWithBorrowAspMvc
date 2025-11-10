@@ -18,6 +18,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
 });
 
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<PasswordHasher<User>>();
 
 // Cookie authentication
