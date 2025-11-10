@@ -22,6 +22,7 @@ namespace LibaryWithBorrowAspMvc.Models.Entities
         public string ImageUrl { get; set; } = string.Empty;
         public required DateTimeOffset CreatedAtByAdmin { get; set; }
 
+        public bool IsBorrowed { get; set; } = false;
         // Category FK
         public Guid CategoryId { get; set; }
         // Navigation property
