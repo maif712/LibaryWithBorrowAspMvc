@@ -18,7 +18,22 @@ namespace LibaryWithBorrowAspMvc.Core.Services
             _repo = repo;
         }
 
-        public Task<PagedResult<TProjection>> GetAllAsync<TProjection>(Expression<Func<Book, TProjection>> selector, PaginationOptions options)
-            => _repo.GetAllAsync(selector, options);
+        public async Task<PagedResult<TProjection>> GetAllAsync<TProjection>(Expression<Func<Book, TProjection>> selector, PaginationOptions options)
+            => await _repo.GetAllAsync(selector, options);
+
+        public async Task<OperationResult<Book>> CreateAsync(Book entity)
+        {
+            try
+            {
+                var created = await _repo.CreateAsync(entity);
+                return OperationResult<Book>.Ok(created, "Book created successfully.");
+            }
+            catch (Exception ex)
+            {
+                return OperationResult<Book>.Fail($"Failed to create book: {ex.Message}");
+            }
+        }
+
+
     }
 }
