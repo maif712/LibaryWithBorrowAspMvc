@@ -4,6 +4,7 @@ using LibaryWithBorrowAspMvc.Core.Interfaces;
 using LibaryWithBorrowAspMvc.Data;
 using LibaryWithBorrowAspMvc.Models.Dtos.Book;
 using LibaryWithBorrowAspMvc.Models.Entities;
+using LibaryWithBorrowAspMvc.Utils;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -41,6 +42,9 @@ namespace LibaryWithBorrowAspMvc.Core.Services
                 var removed = await _repo.DeleteAsync(id);
                 if (removed == null)
                     return OperationResult<Book>.Fail("Book not found.");
+
+                // Remvoe the image
+                StaticHelperFunctions.DeleteImage(removed.ImageUrl);
 
                 return OperationResult<Book>.Ok(removed, "Book deleted successfully.");
             }
