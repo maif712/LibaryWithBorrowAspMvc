@@ -74,6 +74,17 @@ namespace LibaryWithBorrowAspMvc.Core
 
             return entity;
         }
+
+        public async Task<TEntity?> DeleteAsync(Guid id)
+        {
+            var entity = await _context.Set<TEntity>().FindAsync(id);
+            if (entity == null)
+                return null;
+
+            _context.Set<TEntity>().Remove(entity);
+            await _context.SaveChangesAsync();
+            return entity;
+        }
     }
 
 }

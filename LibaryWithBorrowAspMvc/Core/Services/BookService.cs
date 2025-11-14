@@ -34,6 +34,21 @@ namespace LibaryWithBorrowAspMvc.Core.Services
             }
         }
 
+        public async Task<OperationResult<Book>> DeleteAsync(Guid id)
+        {
+            try
+            {
+                var removed = await _repo.DeleteAsync(id);
+                if (removed == null)
+                    return OperationResult<Book>.Fail("Book not found.");
+
+                return OperationResult<Book>.Ok(removed, "Book deleted successfully.");
+            }
+            catch (Exception ex)
+            {
+                return OperationResult<Book>.Fail($"Failed to delete entity: {ex.Message}");
+            }
+        }
 
     }
 }

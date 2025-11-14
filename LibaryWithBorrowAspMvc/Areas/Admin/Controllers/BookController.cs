@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using Humanizer;
 using LibaryWithBorrowAspMvc.Core.Interfaces;
 using LibaryWithBorrowAspMvc.Extension;
 using LibaryWithBorrowAspMvc.Models.Dtos.Book;
@@ -98,6 +99,30 @@ namespace LibaryWithBorrowAspMvc.Areas.Admin.Controllers
             {
                 this.AddError("Something unexpected happened!");
                 return View(dto);
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            try
+            {
+                var response = await _bookService.DeleteAsync(id);
+                if (response.Success)
+                {
+                    this.AddSuccess(response.Message!);
+                    return RedirectToAction(nameof(Index));
+                }
+
+                this.AddError(response.Message!);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception)
+            {
+
+                this.AddError("Something unexpected happened!");
+                return RedirectToAction(nameof(Index));
             }
         }
 

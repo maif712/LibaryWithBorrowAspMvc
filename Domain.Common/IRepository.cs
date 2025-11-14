@@ -13,5 +13,6 @@ namespace Domain.Common
         Task<PagedResult<TProjection>> GetAllAsync<TProjection>(Expression<Func<TEntity, TProjection>> selector, PaginationOptions options);
 
         Task<TEntity> CreateAsync(TEntity entity);
+        Task<TEntity?> DeleteAsync(Guid id);
     }
 }
