@@ -51,11 +51,14 @@ namespace LibaryWithBorrowAspMvc.Utils
             }
 
             // Return relative path for DB
-            return "/images/" + uniqueFileName;
+            return StaticPath.IMAGE_FOLDER_PATH + uniqueFileName;
         }
 
         public static void DeleteImage(string? imagePath)
         {
+            if (imagePath == StaticPath.NO_IMAGE_PATH)
+                return;
+
             if (string.IsNullOrEmpty(imagePath))
                 return;
 
