@@ -1,0 +1,156 @@
+﻿@model CreateBookDto
+
+@{
+    ViewData["Title"] = "Create Book";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-gradient-primary text-white">
+            <h4 class="mb-0">📚 Create a New Book</h4>
+        </div>
+        <div class="card-body p-4">
+
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                <div class="row g-3">
+
+                    <!-- Title -->
+                    <div class="col-md-6">
+                        <label asp-for="Title" class="form-label fw-bold"></label>
+                        <input asp-for="Title" class="form-control" placeholder="Enter book title" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <!-- Author -->
+                    <div class="col-md-6">
+                        <label asp-for="AuthorName" class="form-label fw-bold"></label>
+                        <input asp-for="AuthorName" class="form-control" placeholder="Enter author name" />
+                        <span asp-validation-for="AuthorName" class="text-danger"></span>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="col-12">
+                        <label asp-for="Description" class="form-label fw-bold"></label>
+                        <textarea asp-for="Description" class="form-control" rows="3" placeholder="Enter description"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <!-- Published Year -->
+                    <div class="col-md-4">
+                        <label asp-for="PublishedAt" class="form-label fw-bold"></label>
+                        <input asp-for="PublishedAt" class="form-control" type="number" placeholder="e.g. 2024" />
+                        <span asp-validation-for="PublishedAt" class="text-danger"></span>
+                    </div>
+
+                    <!-- Pages -->
+                    <div class="col-md-4">
+                        <label asp-for="Pages" class="form-label fw-bold"></label>
+                        <input asp-for="Pages" class="form-control" type="number" placeholder="Number of pages" />
+                        <span asp-validation-for="Pages" class="text-danger"></span>
+                    </div>
+
+                    <!-- Category -->
+                    <div class="col-md-4">
+                        <label asp-for="CategoryId" class="form-label fw-bold">Category</label>
+                        <select asp-for="CategoryId" class="form-select">
+                            <option value="">-- Select Category --</option>
+                            <option value="38fab88e-80f0-42ba-969c-1c783b022454">Fiction</option>
+                            <option value="30a3cea8-1dcc-458a-b2c4-b7a92ef63a51">History</option>
+                            <option value="ce24fc45-002b-4b4e-bbc4-254527a29ff0">Cooking</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label fw-bold">Book Cover</label>
+                        <div id="dropArea" class="file-drop-area border border-2 border-dashed rounded p-4 text-center">
+                            <input type="file" name="imageFile" id="imageFile" class="form-control d-none" accept="image/*" />
+                            <label for="imageFile" class="btn btn-outline-primary">Choose Image</label>
+                            <p class="text-muted mt-2">Drag & drop or click to select an image</p>
+                            <img id="previewImage" src="/images/no-image.png"
+                                 class="img-fluid mt-3 rounded shadow-sm"
+                                 style="max-height: 200px; display:none;" />
+                            <button type="button" id="removeImage" class="btn btn-sm btn-outline-danger mt-3" style="display:none;">
+                                <i class="bi bi-x-circle"></i> Remove Image
+                            </button>
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+
+                <div class="mt-4 text-end">
+                    <button type="submit" class="btn btn-success px-4">Create Book</button>
+                    <a asp-action="Index" class="btn btn-secondary px-4">Cancel</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const fileInput = document.getElementById("imageFile");
+        const previewImage = document.getElementById("previewImage");
+        const dropArea = document.getElementById("dropArea");
+        const removeBtn = document.getElementById("removeImage");
+
+        function showPreview(file) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                previewImage.src = e.target.result;
+                previewImage.style.display = "block";
+                removeBtn.style.display = "inline-block";
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Handle normal file selection
+        fileInput.addEventListener("change", () => {
+            const file = fileInput.files[0];
+            if (file) showPreview(file);
+        });
+
+        // Prevent default drag behaviors
+        ["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
+            dropArea.addEventListener(eventName, e => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        });
+
+        // Highlight drop area on dragover
+        ["dragenter", "dragover"].forEach(eventName => {
+            dropArea.classList.add("bg-light");
+        });
+        ["dragleave", "drop"].forEach(eventName => {
+            dropArea.classList.remove("bg-light");
+        });
+
+        // Handle dropped files
+        dropArea.addEventListener("drop", e => {
+            const file = e.dataTransfer.files[0];
+            if (file) {
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                fileInput.files = dataTransfer.files;
+                showPreview(file);
+            }
+        });
+
+        // Remove image button
+        removeBtn.addEventListener("click", () => {
+            fileInput.value = "";
+            previewImage.src = "/images/no-image.png";
+            previewImage.style.display = "block";
+            removeBtn.style.display = "none";
+        });
+    </script>
+}
+
+
+
+

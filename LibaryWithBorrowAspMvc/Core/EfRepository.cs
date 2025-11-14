@@ -39,6 +39,16 @@ namespace LibaryWithBorrowAspMvc.Core
             if (page > totalPages)
                 page = totalPages;
 
+            // Apply ordering based on options
+            if (options.Descending)
+            {
+                query = query.OrderByDescending(e => EF.Property<DateTimeOffset>(e, "CreatedAtByAdmin"));
+            }
+            else
+            {
+                query = query.OrderBy(e => EF.Property<DateTimeOffset>(e, "CreatedAtByAdmin"));
+            }
+
             var items = await query
                 .Skip((page - 1) * options.PageSize)
                 .Take(options.PageSize)
@@ -52,6 +62,17 @@ namespace LibaryWithBorrowAspMvc.Core
                 Page = page,
                 PageSize = options.PageSize
             };
+        }
+
+        public async Task<TEntity> CreateAsync(TEntity entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity));
+
+            await _context.Set<TEntity>().AddAsync(entity);
+            await _context.SaveChangesAsync();
+
+            return entity;
         }
     }
 
