@@ -103,6 +103,68 @@ namespace LibaryWithBorrowAspMvc.Areas.Admin.Controllers
         }
 
 
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            try
+            {
+                var dto = await _bookService.GetByIdAsync(id, b => new UpdateBookDto
+                {
+                    Id = b.Id,
+                    Title = b.Title,
+                    AuthorName = b.AuthorName,
+                    Description = b.Description,
+                    PublishedAt = b.PublishedAt,
+                    Pages = b.Pages,
+                    CategoryId = b.CategoryId,
+                    ImageUrl = b.ImageUrl
+                });
+
+                if (dto == null)
+                {
+                    this.AddError("Book not found.");
+                    return RedirectToAction(nameof(Index));
+                }
+
+                return View(dto);
+            }
+            catch (Exception ex)
+            {
+                this.AddError($"Unexpected error while loading book: {ex.Message}");
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(UpdateBookDto dto, IFormFile? imageFile)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(dto);
+            }
+
+            try
+            {
+                var response = await _bookService.UpdateAsync(dto.Id, dto, imageFile);
+
+                if (response.Success)
+                {
+                    this.AddSuccess(response.Message!);
+                    return RedirectToAction(nameof(Index));
+                }
+
+                this.AddError(response.Message!);
+                return View(dto);
+
+            }
+            catch (Exception ex)
+            {
+                this.AddError($"Something unexpected happened: {ex.Message}");
+                return View(dto);
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> Delete(Guid id)
         {

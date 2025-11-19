@@ -11,8 +11,9 @@ namespace Domain.Common
     public interface IRepository<TEntity>
     {
         Task<PagedResult<TProjection>> GetAllAsync<TProjection>(Expression<Func<TEntity, TProjection>> selector, PaginationOptions options);
-
+        Task<TEntity?> GetByIdAsync(Guid id);
         Task<TEntity> CreateAsync(TEntity entity);
+        Task<TEntity?> UpdateAsync(Guid id, TEntity entity);
         Task<TEntity?> DeleteAsync(Guid id);
     }
 }

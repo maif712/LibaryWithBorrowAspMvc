@@ -63,7 +63,10 @@ namespace LibaryWithBorrowAspMvc.Core
                 PageSize = options.PageSize
             };
         }
-
+        public async Task<TEntity?> GetByIdAsync(Guid id)
+        {
+            return await _context.Set<TEntity>().FindAsync(id);
+        }
         public async Task<TEntity> CreateAsync(TEntity entity)
         {
             if (entity == null)
@@ -75,6 +78,20 @@ namespace LibaryWithBorrowAspMvc.Core
             return entity;
         }
 
+        public async Task<TEntity?> UpdateAsync(Guid id, TEntity entity)
+        {
+            var fEntity = await _context.Set<TEntity>().FindAsync(id);
+            if (fEntity == null)
+                return null;
+
+            // Copy values from the incoming entity into the tracked one
+            _context.Entry(fEntity).CurrentValues.SetValues(entity);
+
+            await _context.SaveChangesAsync();
+            return fEntity;
+        }
+
+
         public async Task<TEntity?> DeleteAsync(Guid id)
         {
             var entity = await _context.Set<TEntity>().FindAsync(id);
@@ -85,6 +102,8 @@ namespace LibaryWithBorrowAspMvc.Core
             await _context.SaveChangesAsync();
             return entity;
         }
+
+        
     }
 
 }
