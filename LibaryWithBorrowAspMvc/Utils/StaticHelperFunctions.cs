@@ -1,4 +1,7 @@
-﻿namespace LibaryWithBorrowAspMvc.Utils
+﻿using Domain.Common;
+using Microsoft.Extensions.Hosting;
+
+namespace LibaryWithBorrowAspMvc.Utils
 {
     public static class StaticHelperFunctions
     {
@@ -48,7 +51,22 @@
             }
 
             // Return relative path for DB
-            return "/images/" + uniqueFileName;
+            return StaticPath.IMAGE_FOLDER_PATH + uniqueFileName;
+        }
+
+        public static void DeleteImage(string? imagePath)
+        {
+            if (imagePath == StaticPath.NO_IMAGE_PATH)
+                return;
+
+            if (string.IsNullOrEmpty(imagePath))
+                return;
+
+            var fullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", imagePath.TrimStart('/'));
+            if (System.IO.File.Exists(fullPath))
+            {
+                System.IO.File.Delete(fullPath);
+            }
         }
     }
 }

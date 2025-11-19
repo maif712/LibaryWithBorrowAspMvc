@@ -13,6 +13,7 @@ namespace LibaryWithBorrowAspMvc.Core.Interfaces
             PaginationOptions options);
         Task<OperationResult<Book>> CreateAsync(Book entity);
 
+        Task<OperationResult<Book>> DeleteAsync(Guid id);
 
     }
 }
